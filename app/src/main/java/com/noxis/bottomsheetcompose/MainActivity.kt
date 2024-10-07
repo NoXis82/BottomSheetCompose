@@ -7,8 +7,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.BottomSheetScaffold
-import androidx.compose.material.rememberBottomSheetScaffoldState
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -31,24 +32,23 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val bottomSheetScaffoldState = rememberBottomSheetScaffoldState()
+            val modalBottomSheetState =
+                rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
             val scope = rememberCoroutineScope()
-            BottomSheetScaffold(
+            ModalBottomSheetLayout(
                 sheetContent = {
                     BottomSheetContent()
                 },
-                scaffoldState = bottomSheetScaffoldState,
+                sheetState = modalBottomSheetState,
                 sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
                 sheetBackgroundColor = colorResource(id = R.color.colorPrimary),
-                // sheetPeekHeight = 0.dp,
-                // scrimColor = Color.Red,  // Color for the fade background when you open/close the bottom sheet
             ) {
                 Scaffold(
                     topBar = { TopBar() },
                     containerColor = colorResource(id = R.color.colorPrimaryDark)
                 ) { padding ->  // We need to pass scaffold's inner padding to content. That's why we use Box.
                     Box(modifier = Modifier.padding(padding)) {
-                        MainScreen(scope = scope, state = bottomSheetScaffoldState)
+                        MainScreen(scope = scope, state = modalBottomSheetState)
                     }
                 }
             }

@@ -1,10 +1,12 @@
 package com.noxis.bottomsheetcompose.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.BottomSheetScaffoldState
-import androidx.compose.material.rememberBottomSheetScaffoldState
+import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,9 +24,11 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(scope: CoroutineScope, state: BottomSheetScaffoldState) {
+fun MainScreen(scope: CoroutineScope, state: ModalBottomSheetState) {
     Column(
-        Modifier.fillMaxSize(),
+        Modifier
+            .fillMaxSize()
+            .background(colorResource(R.color.colorPrimaryDark)),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -35,27 +39,20 @@ fun MainScreen(scope: CoroutineScope, state: BottomSheetScaffoldState) {
             ),
             onClick = {
                 scope.launch {
-                    if (state.bottomSheetState.isCollapsed) {
-                        state.bottomSheetState.expand()
-                    } else {
-                        state.bottomSheetState.collapse()
-                    }
+                    state.show()
                 }
             }) {
-            if (state.bottomSheetState.isCollapsed) {
-                Text(text = "Open Bottom Sheet Scaffold")
-            } else {
-                Text(text = "Close Bottom Sheet Scaffold")
-            }
+            Text(text = "Open Modal Bottom Sheet Layout")
         }
     }
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {
-    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState()
+    val modalBottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
-    MainScreen(scope = scope, state = bottomSheetScaffoldState)
+    MainScreen(scope = scope, state = modalBottomSheetState)
 }
