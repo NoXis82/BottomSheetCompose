@@ -4,29 +4,52 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.BottomSheetScaffold
+import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.noxis.bottomsheetcompose.ui.theme.BottomSheetComposeTheme
+import com.noxis.bottomsheetcompose.components.BottomSheetContent
+import com.noxis.bottomsheetcompose.components.MainScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            BottomSheetComposeTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    //TODO
+            val bottomSheetScaffoldState = rememberBottomSheetScaffoldState()
+            val scope = rememberCoroutineScope()
+            BottomSheetScaffold(
+                sheetContent = {
+                    BottomSheetContent()
+                },
+                scaffoldState = bottomSheetScaffoldState,
+                sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+                sheetBackgroundColor = colorResource(id = R.color.colorPrimary),
+                // sheetPeekHeight = 0.dp,
+                // scrimColor = Color.Red,  // Color for the fade background when you open/close the bottom sheet
+            ) {
+                Scaffold(
+                    topBar = { TopBar() },
+                    containerColor = colorResource(id = R.color.colorPrimaryDark)
+                ) { padding ->  // We need to pass scaffold's inner padding to content. That's why we use Box.
+                    Box(modifier = Modifier.padding(padding)) {
+                        MainScreen(scope = scope, state = bottomSheetScaffoldState)
+                    }
                 }
             }
         }
